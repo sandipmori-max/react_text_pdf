@@ -32,6 +32,48 @@ const Toolbar = ({
   ]);
 };
 
+const addDynamicTable = () => {
+
+  setTemplate([
+    ...template,
+
+    {
+      id: uid(),
+
+      type: "dynamicTable",
+
+      x: 50,
+      y: 250,
+
+      width: 500,
+      height: 300,
+
+      dataSource: "items",
+
+      columns: [
+        {
+          key: "name",
+          label: "Item",
+        },
+        {
+          key: "qty",
+          label: "Qty",
+        },
+        {
+          key: "price",
+          label: "Price",
+        },
+        {
+  key: "amount",
+  label: "Amount",
+  formula: "qty * price"
+}
+      ],
+    },
+  ]);
+};
+
+
   const addText = () => {
 
     setTemplate([
@@ -455,6 +497,19 @@ const addVerticalLine = () => {
   "
 >
   Add Page
+</button>
+
+<button
+  onClick={addDynamicTable}
+  className="
+    w-full
+    rounded
+    bg-violet-600
+    py-2
+    text-white
+  "
+>
+  Add Dynamic Table
 </button>
 
         <button

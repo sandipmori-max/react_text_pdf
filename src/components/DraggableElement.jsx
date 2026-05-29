@@ -65,8 +65,8 @@ const DraggableElement = ({
         >
             <div
                 className={`h-full w-full ${selectedElement?.id === element.id
-                        ? "border-2 border-blue-500"
-                        : ""
+                    ? "border-2 border-blue-500"
+                    : ""
                     }`}
             >
 
@@ -105,21 +105,21 @@ const DraggableElement = ({
                                 outline-none
                                 "
                         style={{
-  fontSize: element.fontSize,
+                            fontSize: element.fontSize,
 
-  fontWeight: element.fontWeight,
+                            fontWeight: element.fontWeight,
 
-  fontStyle: element.fontStyle,
+                            fontStyle: element.fontStyle,
 
-  textDecoration:
-    element.textDecoration,
+                            textDecoration:
+                                element.textDecoration,
 
-  textAlign: element.textAlign,
+                            textAlign: element.textAlign,
 
-  fontFamily: element.fontFamily,
+                            fontFamily: element.fontFamily,
 
-  color: element.color,
-}}
+                            color: element.color,
+                        }}
                     />
 
                 )}
@@ -140,6 +140,139 @@ const DraggableElement = ({
 
                 )}
 
+                {element.type === "dynamicTable" && (
+
+                    <div className="h-full w-full overflow-auto bg-white">
+
+                        <table className="w-full border-collapse">
+
+                            {/* ========================= */}
+                            {/* HEADER */}
+                            {/* ========================= */}
+
+                            <thead>
+
+                                <tr>
+
+                                    {element.columns.map((column) => (
+
+                                        <th
+                                            key={column.key}
+                                            className="
+                border
+                border-gray-400
+                bg-gray-100
+                p-2
+                text-left
+                font-bold
+              "
+                                            style={{
+                                                width: column.width || "auto",
+                                            }}
+                                        >
+
+                                            {column.label}
+
+                                        </th>
+
+                                    ))}
+
+                                </tr>
+
+                            </thead>
+
+                            {/* ========================= */}
+                            {/* BODY */}
+                            {/* ========================= */}
+
+                            <tbody>
+
+                                {items.map((row, rowIndex) => (
+
+                                    <tr key={rowIndex}>
+
+                                        {element.columns.map((column) => {
+
+                                            // =========================
+                                            // FORMULA VALUE
+                                            // =========================
+
+                                            let cellValue = "";
+
+                                            if (column.formula) {
+
+                                                try {
+
+                                                    // =====================
+                                                    // CREATE DYNAMIC FUNCTION
+                                                    // =====================
+
+                                                    const keys =
+                                                        Object.keys(row);
+
+                                                    const values =
+                                                        Object.values(row);
+
+                                                    const formulaFunction =
+                                                        new Function(
+                                                            ...keys,
+                                                            `return ${column.formula}`
+                                                        );
+
+                                                    cellValue =
+                                                        formulaFunction(...values);
+
+                                                } catch (error) {
+
+                                                    cellValue = "ERR";
+
+                                                }
+
+                                            } else {
+
+                                                cellValue =
+                                                    row[column.key];
+
+                                            }
+
+                                            // =========================
+                                            // RETURN CELL
+                                            // =========================
+
+                                            return (
+
+                                                <td
+                                                    key={column.key}
+                                                    className="
+                    border
+                    border-gray-300
+                    p-2
+                  "
+                                                    style={{
+                                                        textAlign:
+                                                            column.align || "left",
+                                                    }}
+                                                >
+
+                                                    {cellValue}
+
+                                                </td>
+
+                                            );
+
+                                        })}
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                )}
                 {/* IMAGE */}
 
                 {element.type === "image" && (
@@ -214,83 +347,83 @@ const DraggableElement = ({
 
                 )}
 
-{element.type === "customTable" && (
+                {element.type === "customTable" && (
 
-  <div className="h-full w-full overflow-auto bg-white">
+                    <div className="h-full w-full overflow-auto bg-white">
 
-    <table className="w-full border-collapse">
+                        <table className="w-full border-collapse">
 
-      {/* ========================= */}
-      {/* TABLE HEADER */}
-      {/* ========================= */}
+                            {/* ========================= */}
+                            {/* TABLE HEADER */}
+                            {/* ========================= */}
 
-      <thead>
+                            <thead>
 
-        <tr>
+                                <tr>
 
-          {element.columns.map((column) => (
+                                    {element.columns.map((column) => (
 
-            <th
-              key={column.id}
-              className="
+                                        <th
+                                            key={column.id}
+                                            className="
                 border
                 border-gray-400
                 bg-gray-100
                 p-2
               "
-            >
+                                        >
 
-              <input
-                value={column.title}
-                onMouseDown={(e) =>
-                  e.stopPropagation()
-                }
-                onChange={(e) => {
+                                            <input
+                                                value={column.title}
+                                                onMouseDown={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                onChange={(e) => {
 
-                  const updated = template.map(
-                    (item) => {
+                                                    const updated = template.map(
+                                                        (item) => {
 
-                      if (
-                        item.id === element.id
-                      ) {
+                                                            if (
+                                                                item.id === element.id
+                                                            ) {
 
-                        return {
-                          ...item,
+                                                                return {
+                                                                    ...item,
 
-                          columns:
-                            item.columns.map(
-                              (col) => {
+                                                                    columns:
+                                                                        item.columns.map(
+                                                                            (col) => {
 
-                                if (
-                                  col.id ===
-                                  column.id
-                                ) {
+                                                                                if (
+                                                                                    col.id ===
+                                                                                    column.id
+                                                                                ) {
 
-                                  return {
-                                    ...col,
+                                                                                    return {
+                                                                                        ...col,
 
-                                    title:
-                                      e.target
-                                        .value,
-                                  };
+                                                                                        title:
+                                                                                            e.target
+                                                                                                .value,
+                                                                                    };
 
-                                }
+                                                                                }
 
-                                return col;
-                              }
-                            ),
-                        };
+                                                                                return col;
+                                                                            }
+                                                                        ),
+                                                                };
 
-                      }
+                                                            }
 
-                      return item;
-                    }
-                  );
+                                                            return item;
+                                                        }
+                                                    );
 
-                  setTemplate(updated);
+                                                    setTemplate(updated);
 
-                }}
-                className="
+                                                }}
+                                                className="
                   w-full
                   border-none
                   bg-transparent
@@ -298,117 +431,117 @@ const DraggableElement = ({
                   font-bold
                   outline-none
                 "
-              />
+                                            />
 
-            </th>
+                                        </th>
 
-          ))}
+                                    ))}
 
-        </tr>
+                                </tr>
 
-      </thead>
+                            </thead>
 
-      {/* ========================= */}
-      {/* TABLE BODY */}
-      {/* ========================= */}
+                            {/* ========================= */}
+                            {/* TABLE BODY */}
+                            {/* ========================= */}
 
-      <tbody>
+                            <tbody>
 
-        {element.rows.map(
-          (row, rowIndex) => (
+                                {element.rows.map(
+                                    (row, rowIndex) => (
 
-            <tr key={rowIndex}>
+                                        <tr key={rowIndex}>
 
-              {element.columns.map(
-                (column) => (
+                                            {element.columns.map(
+                                                (column) => (
 
-                  <td
-                    key={column.id}
-                    className="
+                                                    <td
+                                                        key={column.id}
+                                                        className="
                       border
                       border-gray-300
                       p-2
                     "
-                  >
+                                                    >
 
-                    <input
-                      value={
-                        row[column.field]
-                      }
-                      onMouseDown={(e) =>
-                        e.stopPropagation()
-                      }
-                      onChange={(e) => {
+                                                        <input
+                                                            value={
+                                                                row[column.field]
+                                                            }
+                                                            onMouseDown={(e) =>
+                                                                e.stopPropagation()
+                                                            }
+                                                            onChange={(e) => {
 
-                        const updated =
-                          template.map(
-                            (item) => {
+                                                                const updated =
+                                                                    template.map(
+                                                                        (item) => {
 
-                              if (
-                                item.id ===
-                                element.id
-                              ) {
+                                                                            if (
+                                                                                item.id ===
+                                                                                element.id
+                                                                            ) {
 
-                                const newRows =
-                                  [
-                                    ...item.rows,
-                                  ];
+                                                                                const newRows =
+                                                                                    [
+                                                                                        ...item.rows,
+                                                                                    ];
 
-                                newRows[
-                                  rowIndex
-                                ][
-                                  column.field
-                                ] =
-                                  e.target
-                                    .value;
+                                                                                newRows[
+                                                                                    rowIndex
+                                                                                ][
+                                                                                    column.field
+                                                                                ] =
+                                                                                    e.target
+                                                                                        .value;
 
-                                return {
-                                  ...item,
+                                                                                return {
+                                                                                    ...item,
 
-                                  rows:
-                                    newRows,
-                                };
+                                                                                    rows:
+                                                                                        newRows,
+                                                                                };
 
-                              }
+                                                                            }
 
-                              return item;
-                            }
-                          );
+                                                                            return item;
+                                                                        }
+                                                                    );
 
-                        setTemplate(
-                          updated
-                        );
+                                                                setTemplate(
+                                                                    updated
+                                                                );
 
-                      }}
-                      className="
+                                                            }}
+                                                            className="
                         w-full
                         border-none
                         outline-none
                       "
-                    />
+                                                        />
 
-                  </td>
+                                                    </td>
 
-                )
-              )}
+                                                )
+                                            )}
 
-            </tr>
+                                        </tr>
 
-          )
-        )}
+                                    )
+                                )}
 
-      </tbody>
+                            </tbody>
 
-    </table>
+                        </table>
 
-  </div>
+                    </div>
 
-)}
+                )}
 
-{element.type === "line" && (
+                {element.type === "line" && (
 
-  <div
-    className="
+                    <div
+                        className="
       relative
       flex
       items-center
@@ -417,35 +550,35 @@ const DraggableElement = ({
       w-full
       cursor-move
     "
-  >
+                    >
 
-    {element.direction === "horizontal" && (
+                        {element.direction === "horizontal" && (
 
-      <div
-        style={{
-          width: "100%",
-          height: "2px",
-          backgroundColor: element.color,
-        }}
-      />
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "2px",
+                                    backgroundColor: element.color,
+                                }}
+                            />
 
-    )}
+                        )}
 
-    {element.direction === "vertical" && (
+                        {element.direction === "vertical" && (
 
-      <div
-        style={{
-          width: "2px",
-          height: "100%",
-          backgroundColor: element.color,
-        }}
-      />
+                            <div
+                                style={{
+                                    width: "2px",
+                                    height: "100%",
+                                    backgroundColor: element.color,
+                                }}
+                            />
 
-    )}
+                        )}
 
-  </div>
+                    </div>
 
-)}
+                )}
 
             </div>
         </Rnd>
