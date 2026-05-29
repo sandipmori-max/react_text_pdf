@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
+import InvoiceDesigner from './InvoiceDesigner';
 
 const InvoiceModal = ({
   isOpen,
@@ -117,73 +118,12 @@ const InvoiceModal = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="my-8 inline-block w-full max-w-md transform overflow-hidden rounded-lg bg-white text-left align-middle shadow-xl transition-all">
-              <div className="p-4" id="print">
-                <h1 className="text-center text-lg font-bold text-gray-900">
-                  INVOICE
-                </h1>
-                <div className="mt-6">
-                  <div className="mb-4 grid grid-cols-2">
-                    <span className="font-bold">Invoice Number:</span>
-                    <span>{invoiceInfo.invoiceNumber}</span>
-                    <span className="font-bold">Cashier:</span>
-                    <span>{invoiceInfo.cashierName}</span>
-                    <span className="font-bold">Customer:</span>
-                    <span>{invoiceInfo.customerName}</span>
-                  </div>
-
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="border-y border-black/10 text-sm md:text-base">
-                        <th>ITEM</th>
-                        <th className="text-center">QTY</th>
-                        <th className="text-right">PRICE</th>
-                        <th className="text-right">AMOUNT</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item) => (
-                        <tr key={item.id}>
-                          <td className="w-full">{item.name}</td>
-                          <td className="min-w-[50px] text-center">
-                            {item.qty}
-                          </td>
-                          <td className="min-w-[80px] text-right">
-                            ${Number(item.price).toFixed(2)}
-                          </td>
-                          <td className="min-w-[90px] text-right">
-                            ${Number(item.price * item.qty).toFixed(2)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  <div className="mt-4 flex flex-col items-end space-y-2">
-                    <div className="flex w-full justify-between border-t border-black/10 pt-2">
-                      <span className="font-bold">Subtotal:</span>
-                      <span>${invoiceInfo.subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex w-full justify-between">
-                      <span className="font-bold">Discount:</span>
-                      <span>${invoiceInfo.discountRate.toFixed(2)}</span>
-                    </div>
-                    <div className="flex w-full justify-between">
-                      <span className="font-bold">Tax:</span>
-                      <span>${invoiceInfo.taxRate.toFixed(2)}</span>
-                    </div>
-                    <div className="flex w-full justify-between border-t border-black/10 py-2">
-                      <span className="font-bold">Total:</span>
-                      <span className="font-bold">
-                        $
-                        {invoiceInfo.total % 1 === 0
-                          ? invoiceInfo.total
-                          : invoiceInfo.total.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div 
+            className="my-8 inline-block w-full transform overflow-hidden rounded-lg bg-white text-left align-middle shadow-xl transition-all">
+             <InvoiceDesigner
+  invoiceInfo={invoiceInfo}
+  items={items}
+/>
               <div className="mt-4 flex space-x-2 px-4 pb-6">
                 <button
                   className="flex w-full items-center justify-center space-x-1 rounded-md border border-blue-500 py-2 text-sm text-blue-500 shadow-sm hover:bg-blue-500 hover:text-white"
