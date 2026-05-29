@@ -347,196 +347,78 @@ const DraggableElement = ({
 
                 )}
 
-                {element.type === "customTable" && (
+               {element.type === "customTable" && (
+  <div className="h-full w-full overflow-auto bg-white">
+    <table className="w-full border-collapse">
 
-                    <div className="h-full w-full overflow-auto bg-white">
+      <thead>
+        <tr>
+          {element.columns.map((column) => (
+            <th key={column.id} className="border bg-gray-100 p-2">
+              <input
+                value={column.title}
+                onMouseDown={(e) => e.stopPropagation()}
+                onChange={(e) => {
+                  const updated = template.map((item) => {
+                    if (item.id !== element.id) return item;
 
-                        <table className="w-full border-collapse">
+                    return {
+                      ...item,
+                      columns: item.columns.map((col) =>
+                        col.id === column.id
+                          ? { ...col, title: e.target.value }
+                          : col
+                      ),
+                    };
+                  });
 
-                            {/* ========================= */}
-                            {/* TABLE HEADER */}
-                            {/* ========================= */}
+                  setTemplate(updated);
+                }}
+                className="w-full bg-transparent text-center font-bold outline-none"
+              />
+            </th>
+          ))}
+        </tr>
+      </thead>
 
-                            <thead>
+      <tbody>
+        {element.rows.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {element.columns.map((column) => (
+              <td key={column.id} className="border p-2">
+                <input
+                  value={row[column.field]}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    const updated = template.map((item) => {
+                      if (item.id !== element.id) return item;
 
-                                <tr>
+                      return {
+                        ...item,
+                        rows: item.rows.map((r, rIndex) =>
+                          rIndex === rowIndex
+                            ? {
+                                ...r,
+                                [column.field]: e.target.value,
+                              }
+                            : r
+                        ),
+                      };
+                    });
 
-                                    {element.columns.map((column) => (
+                    setTemplate(updated);
+                  }}
+                  className="w-full outline-none"
+                />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
 
-                                        <th
-                                            key={column.id}
-                                            className="
-                border
-                border-gray-400
-                bg-gray-100
-                p-2
-              "
-                                        >
-
-                                            <input
-                                                value={column.title}
-                                                onMouseDown={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                                onChange={(e) => {
-
-                                                    const updated = template.map(
-                                                        (item) => {
-
-                                                            if (
-                                                                item.id === element.id
-                                                            ) {
-
-                                                                return {
-                                                                    ...item,
-
-                                                                    columns:
-                                                                        item.columns.map(
-                                                                            (col) => {
-
-                                                                                if (
-                                                                                    col.id ===
-                                                                                    column.id
-                                                                                ) {
-
-                                                                                    return {
-                                                                                        ...col,
-
-                                                                                        title:
-                                                                                            e.target
-                                                                                                .value,
-                                                                                    };
-
-                                                                                }
-
-                                                                                return col;
-                                                                            }
-                                                                        ),
-                                                                };
-
-                                                            }
-
-                                                            return item;
-                                                        }
-                                                    );
-
-                                                    setTemplate(updated);
-
-                                                }}
-                                                className="
-                  w-full
-                  border-none
-                  bg-transparent
-                  text-center
-                  font-bold
-                  outline-none
-                "
-                                            />
-
-                                        </th>
-
-                                    ))}
-
-                                </tr>
-
-                            </thead>
-
-                            {/* ========================= */}
-                            {/* TABLE BODY */}
-                            {/* ========================= */}
-
-                            <tbody>
-
-                                {element.rows.map(
-                                    (row, rowIndex) => (
-
-                                        <tr key={rowIndex}>
-
-                                            {element.columns.map(
-                                                (column) => (
-
-                                                    <td
-                                                        key={column.id}
-                                                        className="
-                      border
-                      border-gray-300
-                      p-2
-                    "
-                                                    >
-
-                                                        <input
-                                                            value={
-                                                                row[column.field]
-                                                            }
-                                                            onMouseDown={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                            onChange={(e) => {
-
-                                                                const updated =
-                                                                    template.map(
-                                                                        (item) => {
-
-                                                                            if (
-                                                                                item.id ===
-                                                                                element.id
-                                                                            ) {
-
-                                                                                const newRows =
-                                                                                    [
-                                                                                        ...item.rows,
-                                                                                    ];
-
-                                                                                newRows[
-                                                                                    rowIndex
-                                                                                ][
-                                                                                    column.field
-                                                                                ] =
-                                                                                    e.target
-                                                                                        .value;
-
-                                                                                return {
-                                                                                    ...item,
-
-                                                                                    rows:
-                                                                                        newRows,
-                                                                                };
-
-                                                                            }
-
-                                                                            return item;
-                                                                        }
-                                                                    );
-
-                                                                setTemplate(
-                                                                    updated
-                                                                );
-
-                                                            }}
-                                                            className="
-                        w-full
-                        border-none
-                        outline-none
-                      "
-                                                        />
-
-                                                    </td>
-
-                                                )
-                                            )}
-
-                                        </tr>
-
-                                    )
-                                )}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                )}
+    </table>
+  </div>
+)}
 
                 {element.type === "line" && (
 

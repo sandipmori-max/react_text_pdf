@@ -92,10 +92,7 @@ const TemplateRenderer = ({
           element: {
             ...element,
 
-            id:
-              element.id +
-              "_page_" +
-              index,
+             
 
             rows: rowsChunk,
 

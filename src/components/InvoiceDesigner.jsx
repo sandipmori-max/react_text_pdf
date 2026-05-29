@@ -1,23 +1,11 @@
-
-// InvoiceDesigner.jsx
-
 import { useState } from "react";
-
 import defaultTemplate from "../templates/defaultTemplate";
 
 import Toolbar from "./Toolbar";
 import TemplateRenderer from "./TemplateRenderer";
 import PropertiesPanel from "./PropertiesPanel";
 
-const InvoiceDesigner = ({
-  invoiceInfo,
-  items,
-}) => {
-
-  // =========================================
-  // PAGES
-  // =========================================
-
+const InvoiceDesigner = ({ invoiceInfo, items }) => {
   const [pages, setPages] = useState([
     {
       id: 1,
@@ -25,88 +13,56 @@ const InvoiceDesigner = ({
     },
   ]);
 
-  // =========================================
-  // CURRENT PAGE
-  // =========================================
+  const [currentPage, setCurrentPage] = useState(0);
+  const [selectedElement, setSelectedElement] = useState(null);
 
-  const [currentPage, setCurrentPage] =
-    useState(0);
-
-  // =========================================
-  // SELECTED ELEMENT
-  // =========================================
-
-  const [selectedElement, setSelectedElement] =
-    useState(null);
-
-  // =========================================
-  // CURRENT TEMPLATE
-  // =========================================
-
-  const template =
-    pages[currentPage].elements;
-
-  // =========================================
-  // UPDATE TEMPLATE
-  // =========================================
-
-  const updateTemplate = (newTemplate) => {
-
-    const updatedPages = [...pages];
-
-    updatedPages[currentPage].elements =
-      newTemplate;
-
-    setPages(updatedPages);
+  // ✅ ONLY SOURCE OF TRUTH UPDATE FUNCTION
+  const updateTemplate = (newElements) => {
+    setPages((prev) =>
+      prev.map((page, index) =>
+        index === currentPage
+          ? {
+              ...page,
+              elements:
+                typeof newElements === "function"
+                  ? newElements(page.elements)
+                  : newElements,
+            }
+          : page
+      )
+    );
   };
+
+  const template = pages[currentPage]?.elements || [];
 
   return (
     <div className="flex h-screen bg-gray-200">
 
-      {/* ========================================= */}
-      {/* LEFT TOOLBAR */}
-      {/* ========================================= */}
-
       <Toolbar
         template={template}
         setTemplate={updateTemplate}
-
         pages={pages}
         setPages={setPages}
-
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
       />
-
-      {/* ========================================= */}
-      {/* CENTER DESIGNER */}
-      {/* ========================================= */}
 
       <TemplateRenderer
         template={template}
         setTemplate={updateTemplate}
-
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
-
         invoiceInfo={invoiceInfo}
         items={items}
       />
 
-      {/* ========================================= */}
-      {/* RIGHT PROPERTIES */}
-      {/* ========================================= */}
-   
-
-   
       <PropertiesPanel
         template={template}
-  updateTemplate={updateTemplate}
-  selectedElement={selectedElement}
-  setSelectedElement={setSelectedElement}
+        updateTemplate={updateTemplate}
+        selectedElement={selectedElement}
+        setSelectedElement={setSelectedElement}
       />
 
     </div>
